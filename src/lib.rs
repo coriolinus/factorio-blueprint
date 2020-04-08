@@ -30,6 +30,16 @@ impl From<Blueprint> for Container {
     }
 }
 
+impl Container {
+    pub fn decode<R: Read>(reader: R) -> Result<Self> {
+        BlueprintCodec::decode(reader)
+    }
+
+    pub fn encode<W: Write>(&self, writer: W) -> Result<()> {
+        BlueprintCodec::encode(writer, self)
+    }
+}
+
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("json problem")]

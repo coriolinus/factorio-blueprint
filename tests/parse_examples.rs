@@ -9,7 +9,6 @@ fn examples() -> impl Iterator<Item = PathBuf> {
         examples.pop();
     }
     examples.push("tests/examples");
-    dbg!(&examples);
 
     std::fs::read_dir(examples)
         .expect("should find examples dir")
@@ -17,6 +16,15 @@ fn examples() -> impl Iterator<Item = PathBuf> {
         .inspect(|example| {
             dbg!(example);
         })
+}
+
+fn container_examples() -> impl Iterator<Item = Container> {
+    examples().map(|path| {
+        BlueprintCodec::decode(BufReader::new(
+            std::fs::File::open(path).expect("can open example file"),
+        ))
+        .expect("container decoded successfully")
+    })
 }
 
 fn test_parse<R: Read>(reader: R) {
@@ -57,5 +65,17 @@ fn can_read_from_untrimmed_files() {
         test_parse(BufReader::new(
             std::fs::File::open(example).expect("can open example file"),
         ));
+    }
+}
+
+#[test]
+fn roundtrip() {
+    for container in container_examples() {
+        let mut blueprint = Vec::new();
+        container
+            .encode(&mut blueprint)
+            .expect("encoding should succeed");
+        let roundtripped = Container::decode(&blueprint as &[u8]).expect("decoding should succeed");
+        assert_eq!(container, roundtripped);
     }
 }
