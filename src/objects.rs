@@ -2,6 +2,8 @@ use noisy_float::types::{R32, R64};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+const DEFAULT_VERSION: u64 = 77310525440;
+
 pub type Prototype = String;
 pub type EntityNumber = OneBasedIndex;
 pub type ItemStackIndex = u16;
@@ -10,33 +12,82 @@ pub type GraphicsVariation = u8;
 pub type OneBasedIndex = std::num::NonZeroUsize;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum Container {
+    BlueprintBook(BlueprintBook),
+    Blueprint(Blueprint),
+}
+
+impl From<BlueprintBook> for Container {
+    fn from(b: BlueprintBook) -> Container {
+        Container::BlueprintBook(b)
+    }
+}
+
+impl From<Blueprint> for Container {
+    fn from(b: Blueprint) -> Container {
+        Container::Blueprint(b)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(default)]
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_book_object
 pub struct BlueprintBook {
     pub item: String,
     pub label: String,
-    pub label_color: Color,
-    pub blueprints: ArrayValue<Blueprint>,
+    pub label_color: Option<Color>,
+    pub blueprints: Vec<BlueprintBookBlueprintValue>,
     pub active_index: usize,
     pub version: u64,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-pub struct ArrayValue<T> {
-    pub index: usize,
-    pub blueprint: T,
+impl Default for BlueprintBook {
+    fn default() -> BlueprintBook {
+        BlueprintBook {
+            item: "blueprint-book".into(),
+            version: DEFAULT_VERSION,
+            label: Default::default(),
+            label_color: Default::default(),
+            blueprints: Default::default(),
+            active_index: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct BlueprintBookBlueprintValue {
+    pub index: usize,
+    pub blueprint: Blueprint,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(default)]
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 pub struct Blueprint {
     pub item: String,
     pub label: String,
-    pub label_color: Color,
+    pub label_color: Option<Color>,
     pub entities: Vec<Entity>,
     pub tiles: Vec<Tile>,
     pub icons: Vec<Icon>,
     pub schedules: Vec<Schedule>,
     pub version: u64,
+}
+
+impl Default for Blueprint {
+    fn default() -> Blueprint {
+        Blueprint {
+            item: "blueprint-book".into(),
+            version: DEFAULT_VERSION,
+            label: Default::default(),
+            label_color: Default::default(),
+            entities: Default::default(),
+            tiles: Default::default(),
+            icons: Default::default(),
+            schedules: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -50,10 +101,12 @@ pub struct Icon {
 /// https://wiki.factorio.com/Blueprint_string_format#SignalID_object
 pub struct SignalID {
     pub name: Prototype,
+    #[serde(rename = "type")]
     pub type_: SignalIDType,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum SignalIDType {
     Item,
     Fluid,
@@ -68,13 +121,14 @@ pub struct Entity {
     pub position: Position,
     pub direction: Option<u8>,
     pub orientation: Option<R64>,
-    pub connections: Option<ArrayValue<Connection>>,
+    pub connections: Option<HashMap<OneBasedIndex, Connection>>,
     pub control_behaviour: ControlBehaviour,
     pub items: ItemRequest,
     pub recipe: Option<Prototype>,
     pub bar: Option<ItemStackIndex>,
     pub inventory: Option<Inventory>,
     pub infinity_settings: Option<InfinitySettings>,
+    #[serde(rename = "type")]
     pub type_: Option<EntityType>,
     pub input_priority: Option<EntityPriority>,
     pub output_priority: Option<EntityPriority>,
@@ -98,18 +152,21 @@ pub struct Entity {
 pub struct ControlBehaviour;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum EntityType {
     Input,
     Output,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum EntityPriority {
     Left,
     Right,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum EntityFilterMode {
     Whitelist,
     Blacklist,
@@ -139,6 +196,7 @@ pub struct ScheduleRecord {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Wait_Condition_object
 pub struct WaitCondition {
+    #[serde(rename = "type")]
     pub type_: WaitConditionType,
     pub compare_type: CompareType,
     pub ticks: Option<u64>,
@@ -146,6 +204,7 @@ pub struct WaitCondition {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum WaitConditionType {
     Time,
     Inactivity,
@@ -160,6 +219,7 @@ pub enum WaitConditionType {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum CompareType {
     And,
     Or,
@@ -184,7 +244,11 @@ pub struct Position {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
-pub struct Connection((), pub ConnectionPoint, pub Option<ConnectionPoint>);
+pub struct Connection(
+    #[serde(skip)] (),
+    pub ConnectionPoint,
+    pub Option<ConnectionPoint>,
+);
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
@@ -229,6 +293,7 @@ pub struct InfinityFilter {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
+#[serde(rename_all = "kebab-case")]
 pub enum InfinityFilterMode {
     AtLeast,
     AtMost,
