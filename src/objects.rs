@@ -12,25 +12,6 @@ pub type GraphicsVariation = u8;
 pub type OneBasedIndex = std::num::NonZeroUsize;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-#[serde(rename_all = "kebab-case")]
-pub enum Container {
-    BlueprintBook(BlueprintBook),
-    Blueprint(Blueprint),
-}
-
-impl From<BlueprintBook> for Container {
-    fn from(b: BlueprintBook) -> Container {
-        Container::BlueprintBook(b)
-    }
-}
-
-impl From<Blueprint> for Container {
-    fn from(b: Blueprint) -> Container {
-        Container::Blueprint(b)
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(default)]
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_book_object
 pub struct BlueprintBook {
