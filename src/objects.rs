@@ -1,7 +1,5 @@
-use crate::objwalk::Objwalk;
 use noisy_float::types::{R32, R64};
 use serde::{Deserialize, Serialize};
-use std::any::Any;
 use std::collections::HashMap;
 
 const DEFAULT_VERSION: u64 = 77310525440;
@@ -23,18 +21,6 @@ pub struct BlueprintBook {
     pub blueprints: Vec<BlueprintBookBlueprintValue>,
     pub active_index: usize,
     pub version: u64,
-}
-
-impl Objwalk for BlueprintBook {
-    fn walk_structure<F>(&self, visit: F)
-    where
-        F: Fn(&dyn Any),
-    {
-        for blueprintvalue in &self.blueprints {
-            visit(&blueprintvalue.blueprint);
-            blueprintvalue.blueprint.walk_structure(&visit);
-        }
-    }
 }
 
 impl Default for BlueprintBook {
@@ -68,18 +54,6 @@ pub struct Blueprint {
     pub icons: Vec<Icon>,
     pub schedules: Vec<Schedule>,
     pub version: u64,
-}
-
-impl Objwalk for Blueprint {
-    fn walk_structure<F>(&self, visit: F)
-    where
-        F: Fn(&dyn Any),
-    {
-        for entity in &self.entities {
-            visit(entity);
-            entity.walk_structure(&visit);
-        }
-    }
 }
 
 impl Default for Blueprint {
@@ -153,22 +127,6 @@ pub struct Entity {
     pub variation: Option<GraphicsVariation>,
     pub color: Option<Color>,
     pub station: Option<String>,
-}
-
-impl Objwalk for Entity {
-    fn walk_structure<F>(&self, visit: F)
-    where
-        F: Fn(&dyn Any),
-    {
-        if let Some(ref connections) = self.connections {
-            for connection in connections.values() {
-                visit(connection);
-            }
-        }
-        if let Some(ref request) = self.items {
-            visit(request);
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]

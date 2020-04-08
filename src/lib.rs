@@ -1,15 +1,12 @@
 use base64::read::DecoderReader as Base64Decoder;
 use flate2::read::ZlibDecoder;
 use objects::{Blueprint, BlueprintBook};
-use objwalk::Objwalk;
 use serde::{Deserialize, Serialize};
-use std::any::Any;
 use std::io::prelude::*;
 use thiserror::Error;
 use version_prefix::{VersionPrefixReader, VersionPrefixWriter};
 
 pub mod objects;
-pub mod objwalk;
 pub mod version_prefix;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -28,24 +25,6 @@ impl From<BlueprintBook> for Container {
 impl From<Blueprint> for Container {
     fn from(b: Blueprint) -> Container {
         Container::Blueprint(b)
-    }
-}
-
-impl Objwalk for Container {
-    fn walk_structure<F>(&self, visit: F)
-    where
-        F: Fn(&dyn Any),
-    {
-        match self {
-            Self::BlueprintBook(bb) => {
-                visit(bb);
-                bb.walk_structure(visit)
-            }
-            Self::Blueprint(b) => {
-                visit(b);
-                b.walk_structure(visit)
-            }
-        }
     }
 }
 
