@@ -32,13 +32,13 @@ where
     W: Write,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut bonus = 0;
+        let mut offset = 0;
         if !self.0.has_seen_version {
             self.0.has_seen_version = true;
             self.0.wrapped.write(&[self.0.version])?;
-            bonus = 1;
+            offset = 1;
         }
-        self.0.wrapped.write(buf).map(|n| n + bonus)
+        self.0.wrapped.write(buf).map(|n| n + offset)
     }
 
     fn flush(&mut self) -> std::io::Result<()> {
@@ -68,18 +68,12 @@ where
     R: Read,
 {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        let bonus = if self.0.has_seen_version { 0 } else { 1 };
-        let mut inner_buf = vec![0; buf.len() + bonus];
-        let mut qty_read = self.0.wrapped.read(&mut inner_buf)?;
-        if qty_read == 0 {
-            return Ok(0);
-        }
         if !self.0.has_seen_version {
-            qty_read -= 1;
             self.0.has_seen_version = true;
+            let mut head_buf = vec![0];
+            self.0.wrapped.read_exact(&mut head_buf)?;
+            self.1 = Some(head_buf[0]);
         }
-        buf.copy_from_slice(&inner_buf[bonus..]);
-        self.1 = Some(inner_buf[0]);
-        Ok(qty_read)
+        self.0.wrapped.read(buf)
     }
 }

@@ -1,4 +1,5 @@
-use factorio_blueprint::Container;
+use factorio_blueprint::{BlueprintCodec, Container};
+use std::io::Read;
 
 #[test]
 fn can_parse_examples() {
@@ -13,8 +14,29 @@ fn can_parse_examples() {
     for maybe_example in std::fs::read_dir(examples).expect("should find examples dir") {
         let example = maybe_example.expect("should find file").path();
         dbg!(example.file_name());
-        let file = std::fs::File::open(example).expect("can open file");
-        let read_result = dbg!(Container::read_blueprint(file));
-        assert!(read_result.is_ok());
+        let file_data = std::fs::read_to_string(example).expect("can read from file");
+
+        let mut json_data = Vec::new();
+        BlueprintCodec::decode_to_reader(file_data.trim().as_bytes(), |mut reader| {
+            reader
+                .read_to_end(&mut json_data)
+                .expect("codec should be able to proceed");
+        })
+        .expect("should have expected version");
+        let json_str = String::from_utf8(json_data).expect("json data should be valid utf-8");
+
+        if let Err(jserr) = serde_json::from_str::<Container>(&json_str) {
+            use serde_json::error::Category;
+            match jserr.classify() {
+                Category::Syntax | Category::Data => {
+                    const SPACING: usize = 50;
+                    let mut col = jserr.column();
+                    col -= col.min(SPACING);
+                    println!("bad json: {}", &json_str[col..col + 50]);
+                }
+                _ => {}
+            }
+            panic!("error: {}", jserr);
+        }
     }
 }

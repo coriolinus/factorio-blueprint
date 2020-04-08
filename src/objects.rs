@@ -103,8 +103,8 @@ pub struct Entity {
     pub direction: Option<u8>,
     pub orientation: Option<R64>,
     pub connections: Option<HashMap<OneBasedIndex, Connection>>,
-    pub control_behaviour: ControlBehaviour,
-    pub items: ItemRequest,
+    pub control_behaviour: Option<ControlBehaviour>,
+    pub items: Option<ItemRequest>,
     pub recipe: Option<Prototype>,
     pub bar: Option<ItemStackIndex>,
     pub inventory: Option<Inventory>,
@@ -137,6 +137,7 @@ pub struct ControlBehaviour;
 pub enum EntityType {
     Input,
     Output,
+    Item,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
@@ -223,13 +224,27 @@ pub struct Position {
     pub y: R64,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-/// https://wiki.factorio.com/Blueprint_string_format#Connection_object
-pub struct Connection(
-    #[serde(skip)] (),
-    pub ConnectionPoint,
-    pub Option<ConnectionPoint>,
-);
+// TODO: figure out what this should really be
+//
+// #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+// #[serde(deny_unknown_fields)]
+// #[serde(untagged)]
+// /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
+// pub enum Connection {
+//     One(ConnectionPoint),
+//     OneVariant{
+//         #[serde(rename="1")]
+//         one: ConnectionPoint,
+//     },
+//     Two{
+//         #[serde(rename = "1")]
+//         one: ConnectionPoint,
+//         #[serde(rename = "2")]
+//         two: ConnectionPoint
+//     },
+// }
+
+pub type Connection = serde_json::Value;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
@@ -244,11 +259,15 @@ pub struct ConnectionData {
     pub entity_id: EntityNumber,
     // FIXME: this should be an enum which maps to the defined ints, but
     // I don't have the definitions handy right now.
-    pub circuit_id: i32,
+    pub circuit_id: Option<i32>,
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Item_request_object
-type ItemRequest = HashMap<Prototype, ItemCountType>;
+//
+// TODO: figure out what this really is
+//
+// type ItemRequest = HashMap<Prototype, ItemCountType>;
+type ItemRequest = serde_json::Value;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Item_filter_object
@@ -302,7 +321,7 @@ pub struct SpeakerParameter {
 pub struct SpeakerAlertParameter {
     pub show_alert: bool,
     pub show_on_map: bool,
-    pub icon_signal_id: SignalID,
+    pub icon_signal_id: Option<SignalID>,
     pub alert_message: String,
 }
 
