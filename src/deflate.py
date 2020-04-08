@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    print(json.dumps(unpack(args.path), indent=2))
+    print(json.dumps(unpack(args.path), indent=None, separators=(",", ":")))

@@ -16,6 +16,7 @@ mod m {
         #[structopt(short, long, parse(from_os_str), conflicts_with = "data")]
         file: Option<PathBuf>,
         /// read data from the command line instead of a file
+        #[structopt(short, long)]
         data: Option<String>,
     }
 
