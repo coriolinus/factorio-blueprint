@@ -305,11 +305,18 @@ pub struct ConnectionData {
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Item_request_object
-//
-// TODO: figure out what this really is
-//
-// type ItemRequest = HashMap<Prototype, ItemCountType>;
-type ItemRequest = serde_json::Value;
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum ItemRequest {
+    Compact(HashMap<Prototype, ItemCountType>),
+    Verbose(Vec<ItemRequestVerbose>),
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct ItemRequestVerbose {
+    pub item: Prototype,
+    pub count: ItemCountType,
+}
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Item_filter_object
