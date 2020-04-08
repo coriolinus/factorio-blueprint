@@ -32,13 +32,14 @@ where
     W: Write,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut offset = 0;
-        if !self.0.has_seen_version {
-            self.0.has_seen_version = true;
-            self.0.wrapped.write(&[self.0.version])?;
-            offset = 1;
+        if self.0.has_seen_version {
+            self.0.wrapped.write(buf)
+        } else {
+            let mut new_buf = vec![0; buf.len() + 1];
+            new_buf[0] = self.0.version;
+            (&mut new_buf[1..]).copy_from_slice(buf);
+            self.0.wrapped.write(&new_buf)
         }
-        self.0.wrapped.write(buf).map(|n| n + offset)
     }
 
     fn flush(&mut self) -> std::io::Result<()> {
