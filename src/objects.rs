@@ -266,33 +266,14 @@ pub struct Position {
     pub y: R64,
 }
 
-// TODO: figure out what this should really be
-//
-// #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-// #[serde(deny_unknown_fields)]
-// #[serde(untagged)]
-// /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
-// pub enum Connection {
-//     One(ConnectionPoint),
-//     OneVariant{
-//         #[serde(rename="1")]
-//         one: ConnectionPoint,
-//     },
-//     Two{
-//         #[serde(rename = "1")]
-//         one: ConnectionPoint,
-//         #[serde(rename = "2")]
-//         two: ConnectionPoint
-//     },
-// }
-
-pub type Connection = serde_json::Value;
+/// https://wiki.factorio.com/Blueprint_string_format#Connection_object
+pub type Connection = ConnectionPoint;
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
 pub struct ConnectionPoint {
-    pub red: Vec<ConnectionData>,
-    pub green: Vec<ConnectionData>,
+    pub red: Option<Vec<ConnectionData>>,
+    pub green: Option<Vec<ConnectionData>>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
