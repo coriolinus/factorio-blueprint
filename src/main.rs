@@ -70,5 +70,6 @@ fn main() -> Result<()> {
             })?
         }
     }
+    println!();
     Ok(())
 }

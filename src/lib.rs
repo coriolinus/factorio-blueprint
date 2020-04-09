@@ -11,6 +11,8 @@ pub mod objects;
 pub mod version_prefix;
 pub mod whitespace_remover;
 
+/// `Container`s are the primary entry point for this library: they contain
+/// either a single blueprint, or a blueprint book.
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Container {
@@ -56,6 +58,7 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Utility class which knows how to convert JSON to and from Factorio's blueprint string format.
 pub struct BlueprintCodec;
 
 impl BlueprintCodec {
