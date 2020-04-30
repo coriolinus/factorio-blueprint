@@ -17,6 +17,7 @@ pub type OneBasedIndex = std::num::NonZeroUsize;
 pub struct BlueprintBook {
     pub item: String,
     pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_color: Option<Color>,
     pub blueprints: Vec<BlueprintBookBlueprintValue>,
     pub active_index: usize,
@@ -48,6 +49,7 @@ pub struct BlueprintBookBlueprintValue {
 pub struct Blueprint {
     pub item: String,
     pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label_color: Option<Color>,
     pub entities: Vec<Entity>,
     pub tiles: Vec<Tile>,
@@ -59,7 +61,7 @@ pub struct Blueprint {
 impl Default for Blueprint {
     fn default() -> Blueprint {
         Blueprint {
-            item: "blueprint-book".into(),
+            item: "blueprint".into(),
             version: DEFAULT_VERSION,
             label: Default::default(),
             label_color: Default::default(),
@@ -100,32 +102,58 @@ pub struct Entity {
     pub entity_number: EntityNumber,
     pub name: Prototype,
     pub position: Position,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub direction: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub connections: Option<HashMap<OneBasedIndex, Connection>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub control_behaviour: Option<ControlBehaviour>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<ItemRequest>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recipe: Option<Prototype>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bar: Option<ItemStackIndex>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Inventory>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub infinity_settings: Option<InfinitySettings>,
     #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<EntityType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub input_priority: Option<EntityPriority>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub output_priority: Option<EntityPriority>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub filter: Option<Prototype>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ItemFilter>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub filter_mode: Option<EntityFilterMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub override_stack_size: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub drop_position: Option<Position>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub pickup_position: Option<Position>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_filters: Option<Vec<LogisticFilter>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_from_buffers: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub parameters: Option<SpeakerParameter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alert_parameters: Option<SpeakerAlertParameter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_launch: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub variation: Option<GraphicsVariation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub color: Option<Color>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub station: Option<String>,
 }
 
@@ -158,6 +186,7 @@ pub enum EntityFilterMode {
 /// https://wiki.factorio.com/Blueprint_string_format#Inventory_object
 pub struct Inventory {
     pub filters: Vec<ItemFilter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bar: Option<ItemStackIndex>,
 }
 
@@ -181,7 +210,9 @@ pub struct WaitCondition {
     #[serde(rename = "type")]
     pub type_: WaitConditionType,
     pub compare_type: CompareType,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ticks: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub condition: Option<CircuitCondition>,
 }
 
@@ -230,7 +261,9 @@ pub type Connection = ConnectionPoint;
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
 pub struct ConnectionPoint {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub red: Option<Vec<ConnectionData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub green: Option<Vec<ConnectionData>>,
 }
 
@@ -240,6 +273,7 @@ pub struct ConnectionData {
     pub entity_id: EntityNumber,
     // FIXME: this should be an enum which maps to the defined ints, but
     // I don't have the definitions handy right now.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_id: Option<i32>,
 }
 
@@ -268,6 +302,7 @@ pub struct ItemFilter {
 /// https://wiki.factorio.com/Blueprint_string_format#Infinity_settings_object
 pub struct InfinitySettings {
     pub remove_unfiltered_items: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<InfinityFilter>>,
 }
 
@@ -309,6 +344,7 @@ pub struct SpeakerParameter {
 pub struct SpeakerAlertParameter {
     pub show_alert: bool,
     pub show_on_map: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_signal_id: Option<SignalID>,
     pub alert_message: String,
 }
