@@ -1,6 +1,7 @@
 use noisy_float::types::{R32, R64};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use crate::Container;
 
 const DEFAULT_VERSION: u64 = 77310525440;
 
@@ -16,7 +17,8 @@ pub type OneBasedIndex = std::num::NonZeroUsize;
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_book_object
 pub struct BlueprintBook {
     pub item: String,
-    pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label_color: Option<Color>,
     pub blueprints: Vec<BlueprintBookBlueprintValue>,
@@ -38,9 +40,11 @@ impl Default for BlueprintBook {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub struct BlueprintBookBlueprintValue {
-    pub index: usize,
-    pub blueprint: Blueprint,
+    index: usize,
+    #[serde(flatten)]
+    item: Container,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -107,7 +111,7 @@ pub struct Entity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connections: Option<HashMap<OneBasedIndex, Connection>>,
+    pub connections: Option<HashMap<String, Connection>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub control_behaviour: Option<ControlBehaviour>,
     #[serde(skip_serializing_if = "Option::is_none")]
