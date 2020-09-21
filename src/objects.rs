@@ -42,9 +42,9 @@ impl Default for BlueprintBook {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub struct BlueprintBookBlueprintValue {
-    index: usize,
+    pub index: usize,
     #[serde(flatten)]
-    item: Container,
+    pub item: Container,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
