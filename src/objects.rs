@@ -111,7 +111,7 @@ pub struct Entity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connections: Option<HashMap<String, Connection>>,
+    pub connections: Option<HashMap<EntityConnectionsIndex, Connection>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub control_behaviour: Option<ControlBehaviour>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -163,6 +163,13 @@ pub struct Entity {
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
 pub struct ControlBehaviour;
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum EntityConnectionsIndex {
+    String(String),
+    Number(OneBasedIndex),
+}
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
