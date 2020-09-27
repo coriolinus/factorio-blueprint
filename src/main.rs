@@ -1,5 +1,10 @@
 #[cfg(not(feature = "codec-cli"))]
-fn main() {}
+fn main() {
+    eprintln!("This binary does not do anything. You need to build it with feature `codec-cli`.");
+    eprintln!();
+    eprintln!("  cargo build --release --features codec-cli");
+    std::process::exit(1);
+}
 
 #[cfg(feature = "codec-cli")]
 mod m {
