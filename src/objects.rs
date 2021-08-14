@@ -161,8 +161,54 @@ pub struct Entity {
     pub station: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
-pub struct ControlBehaviour;
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+/// Reverse-engineered by hand, contains circuit network metadata
+pub struct ControlBehaviour {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used in arithmetic combinators.
+    pub arithmetic_conditions: Option<ArithmeticConditions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used in decider combinators.
+    pub decider_conditions: Option<DeciderConditions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used in constant combinators.
+    pub filters: Option<Vec<LogisticFilter>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used in constant combinators, optional. Default: true
+    pub is_on: Option<bool>
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+/// Reverse-engineered by hand, contains arithmetic combinator metadata
+pub struct ArithmeticConditions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    first_constant: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    first_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    second_constant: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    second_signal: Option<SignalID>,
+    operation: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    output_signal: Option<SignalID>
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+/// Reverse-engineered by hand, contains constant combinator metadata
+pub struct DeciderConditions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    first_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    second_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    constant: Option<i32>,
+    comparator: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    output_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    copy_count_from_input: Option<bool>
+}
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
