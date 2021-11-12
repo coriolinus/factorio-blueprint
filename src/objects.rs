@@ -172,7 +172,7 @@ pub struct ControlBehaviour {
     pub decider_conditions: Option<DeciderConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators.
-    pub filters: Option<Vec<LogisticFilter>>,
+    pub filters: Option<Vec<ControlFilter>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators, optional. Default: true
     pub is_on: Option<bool>
@@ -386,6 +386,14 @@ pub struct LogisticFilter {
     pub name: Prototype,
     pub index: OneBasedIndex,
     pub count: ItemCountType,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+/// Reverse-engineered by hand, contains constant combinator metadata
+pub struct ControlFilter {
+  pub signal: SignalID,
+  pub index: OneBasedIndex,
+  pub count: ItemCountType,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
