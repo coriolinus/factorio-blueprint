@@ -113,7 +113,7 @@ pub struct Entity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connections: Option<EntityConnections>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub control_behaviour: Option<ControlBehaviour>,
+    pub control_behavior: Option<ControlBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<ItemRequest>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -163,7 +163,7 @@ pub struct Entity {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains circuit network metadata
-pub struct ControlBehaviour {
+pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in arithmetic combinators.
     pub arithmetic_conditions: Option<ArithmeticConditions>,
