@@ -182,32 +182,32 @@ pub struct ControlBehaviour {
 /// Reverse-engineered by hand, contains arithmetic combinator metadata
 pub struct ArithmeticConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_constant: Option<i32>,
+    pub first_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_signal: Option<SignalID>,
+    pub first_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_constant: Option<i32>,
+    pub second_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_signal: Option<SignalID>,
-    operation: String,
+    pub second_signal: Option<SignalID>,
+    pub operation: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    output_signal: Option<SignalID>
+    pub output_signal: Option<SignalID>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains constant combinator metadata
 pub struct DeciderConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_signal: Option<SignalID>,
+    pub first_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_signal: Option<SignalID>,
+    pub second_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    constant: Option<i32>,
-    comparator: String,
+    pub constant: Option<i32>,
+    pub comparator: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    output_signal: Option<SignalID>,
+    pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    copy_count_from_input: Option<bool>
+    pub copy_count_from_input: Option<bool>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
