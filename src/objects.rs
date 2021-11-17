@@ -113,7 +113,7 @@ pub struct Entity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connections: Option<EntityConnections>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub control_behaviour: Option<ControlBehaviour>,
+    pub control_behavior: Option<ControlBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<ItemRequest>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -163,7 +163,7 @@ pub struct Entity {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains circuit network metadata
-pub struct ControlBehaviour {
+pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in arithmetic combinators.
     pub arithmetic_conditions: Option<ArithmeticConditions>,
@@ -172,7 +172,7 @@ pub struct ControlBehaviour {
     pub decider_conditions: Option<DeciderConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators.
-    pub filters: Option<Vec<LogisticFilter>>,
+    pub filters: Option<Vec<ControlFilter>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators, optional. Default: true
     pub is_on: Option<bool>
@@ -182,32 +182,32 @@ pub struct ControlBehaviour {
 /// Reverse-engineered by hand, contains arithmetic combinator metadata
 pub struct ArithmeticConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_constant: Option<i32>,
+    pub first_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_signal: Option<SignalID>,
+    pub first_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_constant: Option<i32>,
+    pub second_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_signal: Option<SignalID>,
-    operation: String,
+    pub second_signal: Option<SignalID>,
+    pub operation: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    output_signal: Option<SignalID>
+    pub output_signal: Option<SignalID>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains constant combinator metadata
 pub struct DeciderConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    first_signal: Option<SignalID>,
+    pub first_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    second_signal: Option<SignalID>,
+    pub second_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    constant: Option<i32>,
-    comparator: String,
+    pub constant: Option<i32>,
+    pub comparator: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    output_signal: Option<SignalID>,
+    pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    copy_count_from_input: Option<bool>
+    pub copy_count_from_input: Option<bool>
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -386,6 +386,14 @@ pub struct LogisticFilter {
     pub name: Prototype,
     pub index: OneBasedIndex,
     pub count: ItemCountType,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+/// Reverse-engineered by hand, contains constant combinator metadata
+pub struct ControlFilter {
+    pub signal: SignalID,
+    pub index: OneBasedIndex,
+    pub count: i32,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
