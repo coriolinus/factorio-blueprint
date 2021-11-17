@@ -391,9 +391,9 @@ pub struct LogisticFilter {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains constant combinator metadata
 pub struct ControlFilter {
-  pub signal: SignalID,
-  pub index: OneBasedIndex,
-  pub count: ItemCountType,
+    pub signal: SignalID,
+    pub index: OneBasedIndex,
+    pub count: i32,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
