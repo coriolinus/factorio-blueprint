@@ -74,6 +74,15 @@ pub struct Blueprint {
     pub icons: Vec<Icon>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub schedules: Vec<Schedule>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "position-relative-to-grid")]
+    pub position_relative_to_grid: Option<Position>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "snap-to-grid")]
+    pub snap_to_grid: Option<Position>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "absolute-snapping")]
+    pub absolute_snapping: Option<bool>,
     pub version: u64,
 }
 
@@ -89,6 +98,9 @@ impl Default for Blueprint {
             tiles: Default::default(),
             icons: Default::default(),
             schedules: Default::default(),
+            position_relative_to_grid: Default::default(),
+            snap_to_grid: Default::default(),
+            absolute_snapping: Default::default(),
         }
     }
 }
@@ -283,6 +295,8 @@ pub struct Entity {
     pub color: Option<Color>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub station: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub switch_state: Option<bool>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
