@@ -183,13 +183,13 @@ pub struct UpgradePlannerSettings {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Mapper {
-    pub from: UpgradeEntity,
-    pub to: UpgradeEntity,
+    pub from: SimpleEntity,
+    pub to: SimpleEntity,
     pub index: u32,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-pub struct UpgradeEntity {
+pub struct SimpleEntity {
     #[serde(rename = "type")]
     pub type_: String,
     pub name: String,
@@ -303,17 +303,32 @@ pub struct Entity {
 /// Reverse-engineered by hand, contains circuit network metadata
 pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub connect_to_logistic_network: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in arithmetic combinators.
     pub arithmetic_conditions: Option<ArithmeticConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in decider combinators.
     pub decider_conditions: Option<DeciderConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub logistic_condition: Option<LogisticCondition>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators.
     pub filters: Option<Vec<ControlFilter>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators, optional. Default: true
     pub is_on: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_condition: Option<CircuitCondition>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_hand_read_mode: Option<HandReadMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_read_hand_contents: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_set_stack_size: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used for inserters with the set stack size option
+    pub stack_control_input_signal: Option<SimpleEntity>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -346,6 +361,24 @@ pub struct DeciderConditions {
     pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub copy_count_from_input: Option<bool>,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct LogisticCondition {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub second_signal: Option<SignalID>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub constant: Option<i32>,
+    pub comparator: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
+#[repr(u32)]
+pub enum HandReadMode {
+    Pulse = 0,
+    Hold = 1,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -434,8 +467,16 @@ pub enum CompareType {
     Or,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
-pub struct CircuitCondition;
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct CircuitCondition {
+    pub comparator: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub constant: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_signal: Option<serde_json::value::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub second_signal: Option<serde_json::value::Value>,
+}
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Tile_object
