@@ -13,9 +13,9 @@ pub type ItemCountType = u32;
 pub type GraphicsVariation = u8;
 pub type OneBasedIndex = std::num::NonZeroUsize;
 
+/// https://wiki.factorio.com/Blueprint_string_format#Blueprint_book_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(default)]
-/// https://wiki.factorio.com/Blueprint_string_format#Blueprint_book_object
 pub struct BlueprintBook {
     pub item: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -55,9 +55,9 @@ pub struct BlueprintBookBlueprintValue {
     pub item: Container,
 }
 
+/// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(default)]
-/// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 pub struct Blueprint {
     pub item: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -216,15 +216,15 @@ pub enum TileSelectionMode {
     Only = 3,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Icon_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Icon {
     pub index: OneBasedIndex,
     pub signal: SignalID,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#SignalID_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct SignalID {
     pub name: Prototype,
     #[serde(rename = "type")]
@@ -239,8 +239,8 @@ pub enum SignalIDType {
     Virtual,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Entity_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Entity {
     pub entity_number: EntityNumber,
     pub name: Prototype,
@@ -304,8 +304,8 @@ pub struct Entity {
     pub manual_trains_limit: Option<u32>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains circuit network metadata
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect_to_logistic_network: Option<bool>,
@@ -317,11 +317,11 @@ pub struct ControlBehavior {
     pub decider_conditions: Option<DeciderConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub logistic_condition: Option<LogisticCondition>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators.
-    pub filters: Option<Vec<ControlFilter>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub filters: Option<Vec<ControlFilter>>,
     /// Used in constant combinators, optional. Default: true
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub is_on: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub use_colors: Option<bool>,
@@ -480,31 +480,31 @@ pub enum EntityFilterMode {
     Blacklist,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Inventory_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Inventory {
     pub filters: Vec<ItemFilter>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bar: Option<ItemStackIndex>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Schedule_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Schedule {
     pub schedule: Vec<ScheduleRecord>,
     pub locomotives: Vec<EntityNumber>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Schedule_Record_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ScheduleRecord {
     pub station: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wait_conditions: Option<Vec<WaitCondition>>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Wait_Condition_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct WaitCondition {
     #[serde(rename = "type")]
     pub type_: WaitConditionType,
@@ -548,15 +548,15 @@ pub struct CircuitCondition {
     pub second_signal: Option<serde_json::value::Value>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Tile_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Tile {
     pub name: Prototype,
     pub position: Position,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Position_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Position {
     #[serde(serialize_with = "serialize_r64")]
     pub x: R64,
@@ -567,8 +567,8 @@ pub struct Position {
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
 pub type Connection = ConnectionPoint;
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ConnectionPoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub red: Option<Vec<ConnectionData>>,
@@ -576,8 +576,8 @@ pub struct ConnectionPoint {
     pub green: Option<Vec<ConnectionData>>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_data_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ConnectionData {
     pub entity_id: EntityNumber,
     // FIXME: this should be an enum which maps to the defined ints, but
@@ -600,23 +600,23 @@ pub struct ItemRequestVerbose {
     pub count: ItemCountType,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Item_filter_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ItemFilter {
     pub name: Prototype,
     pub index: OneBasedIndex,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Infinity_settings_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct InfinitySettings {
     pub remove_unfiltered_items: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<InfinityFilter>>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Infinity_filter_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct InfinityFilter {
     pub name: Prototype,
     pub count: ItemCountType,
@@ -632,24 +632,24 @@ pub enum InfinityFilterMode {
     Exactly,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Logistic_filter_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct LogisticFilter {
     pub name: Prototype,
     pub index: OneBasedIndex,
     pub count: ItemCountType,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains constant combinator metadata
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ControlFilter {
     pub signal: SignalID,
     pub index: OneBasedIndex,
     pub count: i32,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Speaker_parameter_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct SpeakerParameter {
     #[serde(serialize_with = "serialize_r64")]
     pub playback_volume: R64,
@@ -657,8 +657,8 @@ pub struct SpeakerParameter {
     pub allow_polyphony: bool,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Speaker_alert_parameter_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct SpeakerAlertParameter {
     pub show_alert: bool,
     pub show_on_map: bool,
@@ -667,7 +667,6 @@ pub struct SpeakerAlertParameter {
     pub alert_message: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Color_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Color {
