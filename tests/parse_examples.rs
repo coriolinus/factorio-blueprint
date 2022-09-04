@@ -1,5 +1,5 @@
-use factorio_blueprint::{BlueprintCodec, Container};
-use std::io::{BufReader, Read};
+use factorio_blueprint::{BlueprintCodec, Container, Error};
+use std::io::{BufReader, Read, Write};
 use std::path::PathBuf;
 
 fn examples() -> impl Iterator<Item = PathBuf> {
@@ -77,5 +77,40 @@ fn roundtrip() {
             .expect("encoding should succeed");
         let roundtripped = Container::decode(&blueprint as &[u8]).expect("decoding should succeed");
         assert_eq!(container, roundtripped);
+    }
+}
+
+/// Decodes a blueprint string into the serde_json Value
+fn decode_to_json_value<R: std::io::Read>(reader: R) -> Result<serde_json::value::Value, Error> {
+    let mut out = Err(Error::NoData);
+    BlueprintCodec::decode_reader(reader, |reader| {
+        out = serde_json::from_reader(reader).map_err(|e| e.into());
+        Ok(())
+    })?;
+    out
+}
+
+/// Decodes a blueprint string and compares that parsed json matches
+/// after we decode and then re-encode it.
+fn roundtrip_blueprint_test(blueprint: &str) {
+    let bp2 =
+        BlueprintCodec::encode_string(&BlueprintCodec::decode_string(blueprint).unwrap()).unwrap();
+    let json_v1 = decode_to_json_value(blueprint.as_bytes()).unwrap();
+    let json_v2 = decode_to_json_value(bp2.as_bytes()).unwrap();
+
+    let mut w = std::fs::File::create("output1.json").unwrap();
+    write!(w, "{:#?}", json_v1).unwrap();
+    
+    let mut w = std::fs::File::create("output2.json").unwrap();
+    write!(w, "{:#?}", json_v2).unwrap();
+
+    assert_eq!(json_v1, json_v2, "Mismatched output found, compare output of output1.json and output2.json");
+}
+
+
+#[test]
+fn roundtrip_new() {
+    for example in examples() {
+        roundtrip_blueprint_test(&std::fs::read_to_string(example).unwrap())
     }
 }

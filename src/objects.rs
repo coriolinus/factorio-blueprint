@@ -1,5 +1,5 @@
 use crate::Container;
-use noisy_float::types::{R32, R64};
+use noisy_float::types::R64;
 use serde::{Deserialize, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::collections::HashMap;
@@ -183,8 +183,10 @@ pub struct UpgradePlannerSettings {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Mapper {
-    pub from: SimpleEntity,
-    pub to: SimpleEntity,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<SimpleEntity>,
     pub index: u32,
 }
 
@@ -192,7 +194,8 @@ pub struct Mapper {
 pub struct SimpleEntity {
     #[serde(rename = "type")]
     pub type_: String,
-    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
@@ -297,6 +300,8 @@ pub struct Entity {
     pub station: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub switch_state: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub manual_trains_limit: Option<u32>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -304,11 +309,11 @@ pub struct Entity {
 pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect_to_logistic_network: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in arithmetic combinators.
-    pub arithmetic_conditions: Option<ArithmeticConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub arithmetic_conditions: Option<ArithmeticConditions>,
     /// Used in decider combinators.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub decider_conditions: Option<DeciderConditions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub logistic_condition: Option<LogisticCondition>,
@@ -319,9 +324,19 @@ pub struct ControlBehavior {
     /// Used in constant combinators, optional. Default: true
     pub is_on: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_colors: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_condition: Option<CircuitCondition>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub circuit_hand_read_mode: Option<HandReadMode>,
+    pub circuit_mode_of_operation: Option<CircuitModeOfOperation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_enable_disable: Option<bool>,
+    /// Read mode for belts
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_contents_read_mode: Option<ContentReadMode>,
+    /// Read mode for inserters
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_hand_read_mode: Option<ContentReadMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_read_hand_contents: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -329,6 +344,42 @@ pub struct ControlBehavior {
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used for inserters with the set stack size option
     pub stack_control_input_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Used for Speakers
+    pub circuit_parameters: Option<SpeakerCircuitParameters>,
+
+    // Train stops
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_from_train: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_stopped_train: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_trains_count: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub set_trains_limit: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_to_train: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub train_stopped_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trains_count_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trains_limit_signal: Option<SimpleEntity>,
+
+    // Roboports
+    /// If this roboport is set to read robot statistics
+    /// Note that if the output signals are None while this is set to Some(true)
+    /// the game will use the default signals of X, Y, Z, T
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_robot_stats: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_construction_output_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_logistic_output_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_construction_output_signal: Option<SimpleEntity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_logistic_output_signal: Option<SimpleEntity>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -376,9 +427,28 @@ pub struct LogisticCondition {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
 #[repr(u32)]
-pub enum HandReadMode {
+pub enum CircuitModeOfOperation {
+    /// TODO what does this correspond to?
+    ZERO = 0,
+    /// TODO what does this correspond to?
+    ONE = 1,
+    /// TODO what does this correspond to?
+    TWO = 2,
+    None = 3,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
+#[repr(u32)]
+pub enum ContentReadMode {
     Pulse = 0,
     Hold = 1,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct SpeakerCircuitParameters {
+    pub instrument_id: i32,
+    pub note_id: i32,
+    pub signal_value_is_pitch: bool,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -494,16 +564,6 @@ pub struct Position {
     pub y: R64,
 }
 
-/// Serialize this R64 value in the same way that Factorio does
-/// If the number fractional component is 0, omit the decimal places
-fn serialize_r64<S: Serializer>(v: &R64, s: S) -> Result<S::Ok, S::Error> {
-    if v.raw().fract() == 0.0 {
-        s.serialize_i64(v.raw() as i64)
-    } else {
-        v.serialize(s)
-    }
-}
-
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
 pub type Connection = ConnectionPoint;
 
@@ -591,6 +651,7 @@ pub struct ControlFilter {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Speaker_parameter_object
 pub struct SpeakerParameter {
+    #[serde(serialize_with = "serialize_r64")]
     pub playback_volume: R64,
     pub playback_globally: bool,
     pub allow_polyphony: bool,
@@ -608,9 +669,20 @@ pub struct SpeakerAlertParameter {
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Color_object
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Color {
-    pub r: R32,
-    pub g: R32,
-    pub b: R32,
-    pub a: R32,
+    pub r: R64,
+    pub g: R64,
+    pub b: R64,
+    pub a: R64,
+}
+
+/// Serialize this R64 value in the same way that Factorio does
+/// If the number fractional component is 0, omit the decimal places
+fn serialize_r64<S: Serializer>(v: &R64, s: S) -> Result<S::Ok, S::Error> {
+    if v.raw().fract() == 0.0 {
+        s.serialize_i64(v.raw() as i64)
+    } else {
+        v.serialize(s)
+    }
 }
