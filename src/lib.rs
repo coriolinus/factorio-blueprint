@@ -1,6 +1,6 @@
 use base64::{read::DecoderReader as Base64Decoder, write::EncoderWriter as Base64Encoder};
 use flate2::{read::ZlibDecoder, write::ZlibEncoder, Compression};
-use objects::{Blueprint, BlueprintBook};
+use objects::{Blueprint, BlueprintBook, DeconstructionPlanner, UpgradePlanner};
 use serde::{Deserialize, Serialize};
 use std::io::prelude::*;
 use thiserror::Error;
@@ -18,6 +18,8 @@ pub mod whitespace_remover;
 pub enum Container {
     BlueprintBook(BlueprintBook),
     Blueprint(Blueprint),
+    DeconstructionPlanner(DeconstructionPlanner),
+    UpgradePlanner(UpgradePlanner),
 }
 
 impl From<BlueprintBook> for Container {

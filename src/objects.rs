@@ -1,7 +1,8 @@
+use crate::Container;
 use noisy_float::types::{R32, R64};
 use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::collections::HashMap;
-use crate::Container;
 
 const DEFAULT_VERSION: u64 = 77310525440;
 
@@ -75,6 +76,114 @@ impl Default for Blueprint {
             schedules: Default::default(),
         }
     }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(default)]
+pub struct DeconstructionPlanner {
+    pub item: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    pub settings: Option<DeconstructionSettings>,
+    pub version: u64,
+}
+
+impl Default for DeconstructionPlanner {
+    fn default() -> DeconstructionPlanner {
+        DeconstructionPlanner {
+            item: "deconstruction_planner".into(),
+            label: None,
+            settings: None,
+            version: DEFAULT_VERSION,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct DeconstructionSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icons: Option<Vec<Icon>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entity_filters: Option<Vec<DeconstructionFilter>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entity_filter_mode: Option<DeconstructionEntityFilterMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trees_and_rocks_only: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tile_filters: Option<Vec<DeconstructionFilter>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tile_selection_mode: Option<TileSelectionMode>,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct DeconstructionFilter {
+    index: u32,
+    name: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(default)]
+pub struct UpgradePlanner {
+    pub item: String,
+    pub settings: Option<UpgradePlannerSettings>,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub label: String,
+    pub version: u64,
+}
+
+impl Default for UpgradePlanner {
+    fn default() -> UpgradePlanner {
+        UpgradePlanner {
+            item: "upgrade_planner".into(),
+            settings: None,
+            label: Default::default(),
+            version: DEFAULT_VERSION,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct UpgradePlannerSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mappers: Option<Vec<Mapper>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icons: Option<Vec<Icon>>,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct Mapper {
+    pub from: UpgradeEntity,
+    pub to: UpgradeEntity,
+    pub index: u32,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub struct UpgradeEntity {
+    #[serde(rename = "type")]
+    pub type_: String,
+    pub name: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
+#[repr(u32)]
+pub enum DeconstructionEntityFilterMode {
+    // Note: Factorio produces and requires ints
+    Whitelist = 0,
+    Blacklist = 1,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
+#[repr(u32)]
+pub enum TileSelectionMode {
+    // Note: Factorio produces and requires ints
+    Normal = 0,
+    Always = 1,
+    Never = 2,
+    Only = 3,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -175,7 +284,7 @@ pub struct ControlBehavior {
     pub filters: Option<Vec<ControlFilter>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Used in constant combinators, optional. Default: true
-    pub is_on: Option<bool>
+    pub is_on: Option<bool>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -191,7 +300,7 @@ pub struct ArithmeticConditions {
     pub second_signal: Option<SignalID>,
     pub operation: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub output_signal: Option<SignalID>
+    pub output_signal: Option<SignalID>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -207,7 +316,7 @@ pub struct DeciderConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub copy_count_from_input: Option<bool>
+    pub copy_count_from_input: Option<bool>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
