@@ -1,6 +1,6 @@
 use crate::Container;
 use noisy_float::types::{R32, R64};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::collections::HashMap;
 
@@ -22,7 +22,12 @@ pub struct BlueprintBook {
     pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label_color: Option<Color>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub blueprints: Vec<BlueprintBookBlueprintValue>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub icons: Vec<Icon>,
     pub active_index: usize,
     pub version: u64,
 }
@@ -34,7 +39,9 @@ impl Default for BlueprintBook {
             version: DEFAULT_VERSION,
             label: Default::default(),
             label_color: Default::default(),
+            description: Default::default(),
             blueprints: Default::default(),
+            icons: Default::default(),
             active_index: Default::default(),
         }
     }
@@ -53,12 +60,19 @@ pub struct BlueprintBookBlueprintValue {
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 pub struct Blueprint {
     pub item: String,
-    pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label_color: Option<Color>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub entities: Vec<Entity>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub tiles: Vec<Tile>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub icons: Vec<Icon>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub schedules: Vec<Schedule>,
     pub version: u64,
 }
@@ -70,6 +84,7 @@ impl Default for Blueprint {
             version: DEFAULT_VERSION,
             label: Default::default(),
             label_color: Default::default(),
+            description: Default::default(),
             entities: Default::default(),
             tiles: Default::default(),
             icons: Default::default(),
@@ -367,7 +382,8 @@ pub struct Schedule {
 /// https://wiki.factorio.com/Blueprint_string_format#Schedule_Record_object
 pub struct ScheduleRecord {
     pub station: String,
-    pub wait_conditions: Vec<WaitCondition>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wait_conditions: Option<Vec<WaitCondition>>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -417,8 +433,20 @@ pub struct Tile {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// https://wiki.factorio.com/Blueprint_string_format#Position_object
 pub struct Position {
+    #[serde(serialize_with = "serialize_r64")]
     pub x: R64,
+    #[serde(serialize_with = "serialize_r64")]
     pub y: R64,
+}
+
+/// Serialize this R64 value in the same way that Factorio does
+/// If the number fractional component is 0, omit the decimal places
+fn serialize_r64<S: Serializer>(v: &R64, s: S) -> Result<S::Ok, S::Error> {
+    if v.raw().fract() == 0.0 {
+        s.serialize_i64(v.raw() as i64)
+    } else {
+        v.serialize(s)
+    }
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
