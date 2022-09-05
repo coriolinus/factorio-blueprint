@@ -371,6 +371,8 @@ pub struct ControlBehavior {
     pub trains_limit_signal: Option<SimpleEntity>,
 
     // Roboports
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub read_logistics: Option<bool>,
     /// If this roboport is set to read robot statistics
     /// Note that if the output signals are None while this is set to Some(true)
     /// the game will use the default signals of X, Y, Z, T
@@ -444,12 +446,11 @@ pub struct LogisticCondition {
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr)]
 #[repr(u32)]
 pub enum CircuitModeOfOperation {
+    /// TODO what does this correspond to? power_book.txt has this set to 0
+    RoboportThing = 0,
+    SetRequests = 1,
     /// TODO what does this correspond to?
-    ZERO = 0,
-    /// TODO what does this correspond to?
-    ONE = 1,
-    /// TODO what does this correspond to?
-    TWO = 2,
+    // TWO = 2,
     None = 3,
 }
 

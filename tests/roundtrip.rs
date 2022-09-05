@@ -112,4 +112,14 @@ mod tests {
         // One belt in pulse, one in hold, and one enable/disable
         roundtrip_blueprint_test("0eNrNVO1qwzAMfBf9dkrTJs1m9iajBCdWW7PENrLTtRS/++yEleyLssJgf2IkS6fzneMLNN2AlpT2wC+gWqMd8OcLOLXXoks5f7YIHJTHHhho0acIT5bQucyT0M4a8lmDnYfAQGmJJ+B52DJA7ZVXOCGOwbnWQ98gxYJbWAyscbHd6MQiQhZluSgZnIFvqkUZR0lF2E4FKwaRuifT1Q0exFEZSl2tonZQvkYtmg5rqVxage9E55BdtwmFrA9CyzqBRKKRsadhVvGen0p7IyPIMoxD9cTBpXl5+uwJUc+PrCTwddiGENgXGVZ3yFDdK0Pck1eonSLn6xs+vwqPlDWCCLvkrsOEcavLkpHDSClzrULdYmZF+wKjYL0VJHwiBk9j5gePPhrwnUWfXPwzj9Z3eLT5V1c1/40Mq5kEKc5HWeLvPJrMZy8GgyOSm071kBfV46ra5OuiWC5DeAMFooiD");
     }
+
+    #[test]
+    fn test_requester_chests_modes_of_operation() {
+        roundtrip_blueprint_test("0eNqdkUGOgzAMRe/idVoRBmibq4wqBMGllsChSagGodx9EthU6qKj2cT61s/3k71CO8w4WWIPagXShh2o7xUc9dwMqeeXCUEBeRxBADdjUoPpyXnSB31H5w8WH3OsaCEIIO7wB5QMVwHInjzhnrmJpeZ5bKNTyc9pAibjYoDhRBJDi/JyLAUsoKrzsYzDIrC3ZqhbvDdPMjb5NFk9k69H02FtbrWZ0DZ7iNy/MOqkXXLL9PQWkV8hqQOVh2sIQbyB5/8Br7I38L9RyI0i7nK7gHo5mIAnWrfNyM+yOF3yUyW/iiLLQvgFOPahgQ==");
+    }
+
+    #[test]
+    fn test_roboports_all_modes() {
+        roundtrip_blueprint_test("0eNqlksFugzAMht/F5xwamo02rzJVKIDHLEGCElMNobz7ErhQVZXYdolkx/7/z5YXqPsJR0+WQS9AjbMB9McCgTpr+pzjeUTQQIwDCLBmyJF3tRudZ4gCyLb4DVrGmwC0TEy4aazBXNlpqNGnguduAaMLqcHZ7JREVFkKmEGXRRJOMOxdX9X4Ze7kfK7xaNqqdx0FpibZfJo+4FZrsclKIZfJ/HQe0e5JqAVdxFuMUTzRFUfoLvKB7pij3Lnl+PyC4HyI4O0P+xFbOstyFdhw+mA//XJvj1OoF1OoQ1NcD0zxL9xtyeki17vVuzMXcEcfVpjiIlV5Lcp3eVbqdIrxBz+rDV4=");
+    }
 }
