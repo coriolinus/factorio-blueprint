@@ -155,8 +155,8 @@ pub struct DeconstructionFilter {
 pub struct UpgradePlanner {
     pub item: String,
     pub settings: Option<UpgradePlannerSettings>,
-    #[serde(skip_serializing_if = "String::is_empty")]
-    pub label: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
     pub version: u64,
 }
 
