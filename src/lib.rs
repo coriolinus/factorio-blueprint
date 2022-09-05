@@ -38,6 +38,8 @@ pub fn decode_to_json_value<R: std::io::Read>(reader: R) -> Result<serde_json::v
     out
 }
 
+/// `Container`s are the primary entry point for this library: they contain
+/// either a single blueprint, or a blueprint book.
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Container {
