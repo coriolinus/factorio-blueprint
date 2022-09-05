@@ -11,8 +11,33 @@ pub mod objects;
 pub mod version_prefix;
 pub mod whitespace_remover;
 
-/// `Container`s are the primary entry point for this library: they contain
-/// either a single blueprint, or a blueprint book.
+/// Decodes a blueprint string and compares that parsed json matches
+/// after we decode and then re-encode it.
+pub fn roundtrip_blueprint_test(blueprint: &str) {
+    let bp2 =
+        BlueprintCodec::encode_string(&BlueprintCodec::decode_string(blueprint).unwrap()).unwrap();
+    let json_v1 = decode_to_json_value(blueprint.as_bytes()).unwrap();
+    let json_v2 = decode_to_json_value(bp2.as_bytes()).unwrap();
+
+    if json_v1 != json_v2 {
+        let mut w = std::fs::File::create("output1.json").unwrap();
+        write!(w, "{:#}", json_v1).unwrap();
+
+        let mut w = std::fs::File::create("output2.json").unwrap();
+        write!(w, "{:#}", json_v2).unwrap();
+        panic!("Mismatched output found, compare output of output1.json and output2.json");
+    }
+}
+
+pub fn decode_to_json_value<R: std::io::Read>(reader: R) -> Result<serde_json::value::Value> {
+    let mut out = Err(Error::NoData);
+    BlueprintCodec::decode_reader(reader, |reader| {
+        out = serde_json::from_reader(reader).map_err(|e| e.into());
+        Ok(())
+    })?;
+    out
+}
+
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Container {

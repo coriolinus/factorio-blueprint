@@ -347,7 +347,7 @@ pub struct ControlBehavior {
     /// Used for Speakers
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_parameters: Option<SpeakerCircuitParameters>,
-    
+
     /// Used for accumulators
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SimpleEntity>,
@@ -384,13 +384,13 @@ pub struct ControlBehavior {
     pub total_construction_output_signal: Option<SimpleEntity>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_logistic_output_signal: Option<SimpleEntity>,
-    
+
     // Gates
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_open_gate: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_read_sensor: Option<bool>,
-    
+
     // Rail signals
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_close_signal: Option<bool>,
@@ -581,7 +581,12 @@ pub struct Position {
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
-pub type Connection = ConnectionPoint;
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum Connection {
+    Single(ConnectionPoint),
+    Multiple(Vec<ConnectionData>),
+}
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
@@ -600,6 +605,8 @@ pub struct ConnectionData {
     // I don't have the definitions handy right now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_id: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wire_id: Option<i32>,
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Item_request_object
