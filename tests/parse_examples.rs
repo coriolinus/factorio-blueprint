@@ -98,13 +98,14 @@ fn roundtrip_blueprint_test(blueprint: &str) {
     let json_v1 = decode_to_json_value(blueprint.as_bytes()).unwrap();
     let json_v2 = decode_to_json_value(bp2.as_bytes()).unwrap();
 
-    let mut w = std::fs::File::create("output1.json").unwrap();
-    write!(w, "{:#?}", json_v1).unwrap();
-    
-    let mut w = std::fs::File::create("output2.json").unwrap();
-    write!(w, "{:#?}", json_v2).unwrap();
-
-    assert_eq!(json_v1, json_v2, "Mismatched output found, compare output of output1.json and output2.json");
+    if json_v1 != json_v2 {
+        let mut w = std::fs::File::create("output1.json").unwrap();
+        write!(w, "{:#}", json_v1).unwrap();
+        
+        let mut w = std::fs::File::create("output2.json").unwrap();
+        write!(w, "{:#}", json_v2).unwrap();
+        panic!("Mismatched output found, compare output of output1.json and output2.json");
+    }
 }
 
 

@@ -341,12 +341,16 @@ pub struct ControlBehavior {
     pub circuit_read_hand_contents: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_set_stack_size: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     /// Used for inserters with the set stack size option
-    pub stack_control_input_signal: Option<SimpleEntity>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub stack_control_input_signal: Option<SimpleEntity>,
     /// Used for Speakers
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_parameters: Option<SpeakerCircuitParameters>,
+    
+    /// Used for accumulators
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output_signal: Option<SimpleEntity>,
 
     // Train stops
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -380,10 +384,22 @@ pub struct ControlBehavior {
     pub total_construction_output_signal: Option<SimpleEntity>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_logistic_output_signal: Option<SimpleEntity>,
+    
+    // Gates
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_open_gate: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_read_sensor: Option<bool>,
+    
+    // Rail signals
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_close_signal: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub circuit_read_signal: Option<bool>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains arithmetic combinator metadata
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ArithmeticConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_constant: Option<i32>,
@@ -398,8 +414,8 @@ pub struct ArithmeticConditions {
     pub output_signal: Option<SignalID>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 /// Reverse-engineered by hand, contains constant combinator metadata
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct DeciderConditions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_signal: Option<SignalID>,

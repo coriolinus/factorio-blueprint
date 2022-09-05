@@ -119,16 +119,7 @@ fn test_control_behavior() {
     roundtrip_blueprint_test("0eNqdU21OwzAMvYt/t2gd24BeBaEqTc1mkTqVkyLG1ANwC35wMk6CExgfYjDEj0aK/Z798uzuoHUjDkIcod4BWc8B6ssdBFqzcSkWtwNCDRSxhwLY9OmWcNFwLK3vW2ITvcBUAHGHd1BX01UByJEi4Wu5fNk2PPYtigJ+LVTA4INyPaf+Wm+xPD9ZFrCFerU8WWofZTHahAgJUqVDsPvcivQ2TzrWgsgHMtM0Fd+Ezd+FqSp7UxIHlIgHNV180xTFu6bFjbklfYbiLIkdKTaa697J1yQhNkcMxn6I27I1IuiSswFTjWOsUQzT2JfXI7rSostUdXYwkp2t4fnhKcWcX1OIZP+hLHhHXe7wd13odFrimWz5ZskBYY859uaYoOmajdHSyVedkg46yogfiJzMsN53mHdqnwqoX5qf6rrHPfE1sh8T8TAefavdYE/WuDJYQrZYDloCpr9vYPXjBlZpAwvwtyhCHX7Rm1lZSf3p/yxAsSGPan5eLc4u5mer6nSxmM2m6QWy0lIq");
     // Inserter circuit net mode of operation none
     roundtrip_blueprint_test("0eNp1j8FuwzAMQ/+FZ69o2qRd/SvDYDiptglL5MBWigWB/312etllRwrUI7mhHxeaI4vCbuAhSIJ925D4U/xYb7rOBAtWmmAgfqoqqR++X1gSRaWIbMBypx/YJr8bkCgr05O0i9XJMvXFaZv/GAZzSOUtSE0tqLa7HTqDFfbSHboSUcppDKPr6cs/OMTqGzgOC6ubwp1c+HBhpuifkHOuXfbe9s9MgwfFtDtOr017vZ2ul+bctsdjzr92QVuk");
-    let bp = BlueprintCodec::decode_string("0eNp1j8FuwzAMQ/+FZ69o2qRd/SvDYDiptglL5MBWigWB/312etllRwrUI7mhHxeaI4vCbuAhSIJ925D4U/xYb7rOBAtWmmAgfqoqqR++X1gSRaWIbMBypx/YJr8bkCgr05O0i9XJMvXFaZv/GAZzSOUtSE0tqLa7HTqDFfbSHboSUcppDKPr6cs/OMTqGzgOC6ubwp1c+HBhpuifkHOuXfbe9s9MgwfFtDtOr017vZ2ul+bctsdjzr92QVuk").unwrap();
-    if let factorio_blueprint::Container::Blueprint(mut bp) = bp {
-        let ins = bp.entities.get_mut(0).unwrap();
-        let mut cb = ins.control_behavior.clone().unwrap();
-        cb.circuit_mode_of_operation =
-            Some(factorio_blueprint::objects::CircuitModeOfOperation::TWO);
-        ins.control_behavior = Some(cb);
-        let s =
-            BlueprintCodec::encode_string(&factorio_blueprint::Container::Blueprint(bp)).unwrap();
-    }
+
     // Train stop, all circuit checkboxes checked
     roundtrip_blueprint_test("0eNqNUsFuwyAM/RefqZS0UbJx3XXH3qYJkcTbLCUQgYkWRfn3AamqtduhJ+Tn954fhhXaIeDkyDDIFaizxoN8W8HTp9FDwniZECQQ4wgCjB5TxU6TOXi2E2wCyPT4DbLc3gWgYWLC3SUXizJhbNFFwn96AZP1UWJNmhZtqjryFpDNKVr35LDbm7WAGI+dHVSLX3om65KiI9cFYoVGtwOqnnw6QbILKMCh7tWHs6PKI2/gNH7C/raTi2vrzxpmchwicr3Jzjic0x488m7m1UAj8Y3nBXvc8jVZ5qAXfWeDuffM2OOeL7ClnKz3lUIkjNpE5l3uIj1lfnL564cImNH5rDw+lVXzfGzq8lRVRbFtP6bNzHs=");
 
