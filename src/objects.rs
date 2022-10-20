@@ -300,6 +300,8 @@ pub struct Entity {
     pub switch_state: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub manual_trains_limit: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub neighbours: Option<Vec<EntityNumber>>,
 }
 
 /// Reverse-engineered by hand, contains circuit network metadata
