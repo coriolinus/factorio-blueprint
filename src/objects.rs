@@ -447,9 +447,11 @@ pub struct LogisticCondition {
 #[repr(u32)]
 pub enum CircuitModeOfOperation {
     /// TODO what does this correspond to? power_book.txt has this set to 0
+    /// https://github.com/coriolinus/factorio-blueprint/issues/7
     RoboportThing = 0,
     SetRequests = 1,
-    /// TODO what does this correspond to?
+    // TODO what does this correspond to?
+    // https://github.com/coriolinus/factorio-blueprint/issues/7
     // TWO = 2,
     None = 3,
 }
