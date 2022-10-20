@@ -560,9 +560,9 @@ pub struct CircuitCondition {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_signal: Option<serde_json::value::Value>,
+    pub first_signal: Option<SimpleEntity>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub second_signal: Option<serde_json::value::Value>,
+    pub second_signal: Option<SimpleEntity>,
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Tile_object
