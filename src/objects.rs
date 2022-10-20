@@ -57,12 +57,13 @@ pub struct BlueprintBookBlueprintValue {
 
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-#[serde(default)]
+#[serde(default, rename_all="kebab-case")]
 pub struct Blueprint {
     pub item: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "label_color")]
     pub label_color: Option<Color>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -75,13 +76,10 @@ pub struct Blueprint {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub schedules: Vec<Schedule>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "position-relative-to-grid")]
     pub position_relative_to_grid: Option<Position>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "snap-to-grid")]
     pub snap_to_grid: Option<Position>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(rename = "absolute-snapping")]
     pub absolute_snapping: Option<bool>,
     pub version: u64,
 }
