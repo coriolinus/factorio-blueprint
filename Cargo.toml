@@ -26,3 +26,6 @@ codec-cli = [
     "anyhow",
     "structopt",
 ]
+
+[dev-dependencies]
+assert-json-diff = "2.0"
