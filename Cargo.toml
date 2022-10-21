@@ -14,7 +14,8 @@ base64 = "0.12"
 flate2 = "1.0"
 noisy_float = { version = "0.1", features = [ "serde-1" ] }
 serde = { version = "1.0", features = [ "derive" ] }
-serde_json = "1.0"
+serde_json = { version = "1.0", features = [ "float_roundtrip" ] }
+serde_repr = "0.1"
 structopt = { version = "0.3", optional = true }
 thiserror = "1.0"
 
@@ -25,3 +26,6 @@ codec-cli = [
     "anyhow",
     "structopt",
 ]
+
+[dev-dependencies]
+assert-json-diff = "2.0"
