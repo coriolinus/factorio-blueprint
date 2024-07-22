@@ -57,7 +57,7 @@ pub struct BlueprintBookBlueprintValue {
 
 /// https://wiki.factorio.com/Blueprint_string_format#Blueprint_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-#[serde(default, rename_all="kebab-case")]
+#[serde(default, rename_all = "kebab-case")]
 pub struct Blueprint {
     pub item: String,
     #[serde(skip_serializing_if = "Option::is_none")]
