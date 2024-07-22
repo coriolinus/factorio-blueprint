@@ -304,6 +304,162 @@ pub struct Entity {
     pub neighbours: Option<Vec<EntityNumber>>,
 }
 
+impl Entity {
+    pub const fn new(entity_number: EntityNumber, name: Prototype, position: Position) -> Self {
+        Self {
+            entity_number,
+            name,
+            position,
+            direction: None,
+            orientation: None,
+            connections: None,
+            control_behavior: None,
+            items: None,
+            recipe: None,
+            bar: None,
+            inventory: None,
+            infinity_settings: None,
+            type_: None,
+            input_priority: None,
+            output_priority: None,
+            filter: None,
+            filters: None,
+            filter_mode: None,
+            override_stack_size: None,
+            drop_position: None,
+            pickup_position: None,
+            request_filters: None,
+            request_from_buffers: None,
+            parameters: None,
+            alert_parameters: None,
+            auto_launch: None,
+            variation: None,
+            color: None,
+            station: None,
+            switch_state: None,
+            manual_trains_limit: None,
+            neighbours: None,
+        }
+    }
+
+    pub const fn with_direction(mut self, direction: u8) -> Self {
+        self.direction = Some(direction);
+        self
+    }
+    pub fn with_orientation(mut self, orientation: f64) -> Self {
+        self.orientation = Some(R64::new(orientation));
+        self
+    }
+    pub fn with_connections(mut self, connections: EntityConnections) -> Self {
+        self.connections = Some(connections);
+        self
+    }
+    pub fn with_control_behavior(mut self, control_behavior: ControlBehavior) -> Self {
+        self.control_behavior = Some(control_behavior);
+        self
+    }
+    pub fn with_items(mut self, items: ItemRequest) -> Self {
+        self.items = Some(items);
+        self
+    }
+    pub fn with_recipe(mut self, recipe: Prototype) -> Self {
+        self.recipe = Some(recipe);
+        self
+    }
+    pub const fn with_bar(mut self, bar: ItemStackIndex) -> Self {
+        self.bar = Some(bar);
+        self
+    }
+    pub fn with_inventory(mut self, inventory: Inventory) -> Self {
+        self.inventory = Some(inventory);
+        self
+    }
+    pub fn with_infinity_settings(mut self, infinity_settings: InfinitySettings) -> Self {
+        self.infinity_settings = Some(infinity_settings);
+        self
+    }
+    pub const fn with_type(mut self, type_: EntityType) -> Self {
+        self.type_ = Some(type_);
+        self
+    }
+    pub const fn with_input_priority(mut self, input_priority: EntityPriority) -> Self {
+        self.input_priority = Some(input_priority);
+        self
+    }
+    pub const fn with_output_priority(mut self, output_priority: EntityPriority) -> Self {
+        self.output_priority = Some(output_priority);
+        self
+    }
+    pub fn with_filter(mut self, filter: Prototype) -> Self {
+        self.filter = Some(filter);
+        self
+    }
+    pub fn with_filters(mut self, filters: Vec<ItemFilter>) -> Self {
+        self.filters = Some(filters);
+        self
+    }
+    pub const fn with_filter_mode(mut self, filter_mode: EntityFilterMode) -> Self {
+        self.filter_mode = Some(filter_mode);
+        self
+    }
+    pub const fn with_override_stack_size(mut self, override_stack_size: u8) -> Self {
+        self.override_stack_size = Some(override_stack_size);
+        self
+    }
+    pub const fn with_drop_position(mut self, drop_position: Position) -> Self {
+        self.drop_position = Some(drop_position);
+        self
+    }
+    pub const fn with_pickup_position(mut self, pickup_position: Position) -> Self {
+        self.pickup_position = Some(pickup_position);
+        self
+    }
+    pub fn with_request_filters(mut self, request_filters: Vec<LogisticFilter>) -> Self {
+        self.request_filters = Some(request_filters);
+        self
+    }
+    pub const fn with_request_from_buffers(mut self, request_from_buffers: bool) -> Self {
+        self.request_from_buffers = Some(request_from_buffers);
+        self
+    }
+    pub const fn with_parameters(mut self, parameters: SpeakerParameter) -> Self {
+        self.parameters = Some(parameters);
+        self
+    }
+    pub fn with_alert_parameters(mut self, alert_parameters: SpeakerAlertParameter) -> Self {
+        self.alert_parameters = Some(alert_parameters);
+        self
+    }
+    pub const fn with_auto_launch(mut self, auto_launch: bool) -> Self {
+        self.auto_launch = Some(auto_launch);
+        self
+    }
+    pub const fn with_variation(mut self, variation: GraphicsVariation) -> Self {
+        self.variation = Some(variation);
+        self
+    }
+    pub const fn with_color(mut self, color: Color) -> Self {
+        self.color = Some(color);
+        self
+    }
+    pub fn with_station(mut self, station: String) -> Self {
+        self.station = Some(station);
+        self
+    }
+    pub const fn with_switch_state(mut self, switch_state: bool) -> Self {
+        self.switch_state = Some(switch_state);
+        self
+    }
+    pub const fn with_manual_trains_limit(mut self, manual_trains_limit: u32) -> Self {
+        self.manual_trains_limit = Some(manual_trains_limit);
+        self
+    }
+    pub fn with_neighbours(mut self, neighbours: Vec<EntityNumber>) -> Self {
+        self.neighbours = Some(neighbours);
+        self
+    }
+}
+
 /// Reverse-engineered by hand, contains circuit network metadata
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct ControlBehavior {
@@ -398,6 +554,219 @@ pub struct ControlBehavior {
     pub circuit_close_signal: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub circuit_read_signal: Option<bool>,
+}
+
+impl ControlBehavior {
+    pub const fn new() -> Self {
+        Self {
+            connect_to_logistic_network: None,
+            arithmetic_conditions: None,
+            decider_conditions: None,
+            logistic_condition: None,
+            filters: None,
+            is_on: None,
+            use_colors: None,
+            circuit_condition: None,
+            circuit_mode_of_operation: None,
+            circuit_enable_disable: None,
+            circuit_contents_read_mode: None,
+            circuit_hand_read_mode: None,
+            circuit_read_hand_contents: None,
+            circuit_set_stack_size: None,
+            stack_control_input_signal: None,
+            circuit_parameters: None,
+            output_signal: None,
+            read_from_train: None,
+            read_stopped_train: None,
+            read_trains_count: None,
+            set_trains_limit: None,
+            send_to_train: None,
+            train_stopped_signal: None,
+            trains_count_signal: None,
+            trains_limit_signal: None,
+            read_logistics: None,
+            read_robot_stats: None,
+            available_construction_output_signal: None,
+            available_logistic_output_signal: None,
+            total_construction_output_signal: None,
+            total_logistic_output_signal: None,
+            circuit_open_gate: None,
+            circuit_read_sensor: None,
+            circuit_close_signal: None,
+            circuit_read_signal: None,
+        }
+    }
+
+    pub const fn with_connect_to_logistic_network(mut self, connect_to_logistic_network: bool) -> Self {
+        self.connect_to_logistic_network = Some(connect_to_logistic_network);
+        self
+    }
+    pub fn with_arithmetic_conditions(
+        mut self,
+        arithmetic_conditions: ArithmeticConditions,
+    ) -> Self {
+        self.arithmetic_conditions = Some(arithmetic_conditions);
+        self
+    }
+    pub fn with_decider_conditions(mut self, decider_conditions: DeciderConditions) -> Self {
+        self.decider_conditions = Some(decider_conditions);
+        self
+    }
+    pub fn with_logistic_condition(mut self, logistic_condition: LogisticCondition) -> Self {
+        self.logistic_condition = Some(logistic_condition);
+        self
+    }
+    pub fn with_filters(mut self, filters: Vec<ControlFilter>) -> Self {
+        self.filters = Some(filters);
+        self
+    }
+    pub const fn with_is_on(mut self, is_on: bool) -> Self {
+        self.is_on = Some(is_on);
+        self
+    }
+    pub const fn with_use_colors(mut self, use_colors: bool) -> Self {
+        self.use_colors = Some(use_colors);
+        self
+    }
+    pub fn with_circuit_condition(mut self, circuit_condition: CircuitCondition) -> Self {
+        self.circuit_condition = Some(circuit_condition);
+        self
+    }
+    pub const fn with_circuit_mode_of_operation(
+        mut self,
+        circuit_mode_of_operation: CircuitModeOfOperation,
+    ) -> Self {
+        self.circuit_mode_of_operation = Some(circuit_mode_of_operation);
+        self
+    }
+    pub const fn with_circuit_enable_disable(mut self, circuit_enable_disable: bool) -> Self {
+        self.circuit_enable_disable = Some(circuit_enable_disable);
+        self
+    }
+    pub const fn with_circuit_contents_read_mode(
+        mut self,
+        circuit_contents_read_mode: ContentReadMode,
+    ) -> Self {
+        self.circuit_contents_read_mode = Some(circuit_contents_read_mode);
+        self
+    }
+    pub const fn with_circuit_hand_read_mode(mut self, circuit_hand_read_mode: ContentReadMode) -> Self {
+        self.circuit_hand_read_mode = Some(circuit_hand_read_mode);
+        self
+    }
+    pub const fn with_circuit_read_hand_contents(mut self, circuit_read_hand_contents: bool) -> Self {
+        self.circuit_read_hand_contents = Some(circuit_read_hand_contents);
+        self
+    }
+    pub const fn with_circuit_set_stack_size(mut self, circuit_set_stack_size: bool) -> Self {
+        self.circuit_set_stack_size = Some(circuit_set_stack_size);
+        self
+    }
+    pub fn with_stack_control_input_signal(
+        mut self,
+        stack_control_input_signal: SimpleEntity,
+    ) -> Self {
+        self.stack_control_input_signal = Some(stack_control_input_signal);
+        self
+    }
+    pub const fn with_circuit_parameters(mut self, circuit_parameters: SpeakerCircuitParameters) -> Self {
+        self.circuit_parameters = Some(circuit_parameters);
+        self
+    }
+    pub fn with_output_signal(mut self, output_signal: SimpleEntity) -> Self {
+        self.output_signal = Some(output_signal);
+        self
+    }
+    pub const fn with_read_from_train(mut self, read_from_train: bool) -> Self {
+        self.read_from_train = Some(read_from_train);
+        self
+    }
+    pub const fn with_read_stopped_train(mut self, read_stopped_train: bool) -> Self {
+        self.read_stopped_train = Some(read_stopped_train);
+        self
+    }
+    pub const fn with_read_trains_count(mut self, read_trains_count: bool) -> Self {
+        self.read_trains_count = Some(read_trains_count);
+        self
+    }
+    pub const fn with_set_trains_limit(mut self, set_trains_limit: bool) -> Self {
+        self.set_trains_limit = Some(set_trains_limit);
+        self
+    }
+    pub const fn with_send_to_train(mut self, send_to_train: bool) -> Self {
+        self.send_to_train = Some(send_to_train);
+        self
+    }
+    pub fn with_train_stopped_signal(mut self, train_stopped_signal: SimpleEntity) -> Self {
+        self.train_stopped_signal = Some(train_stopped_signal);
+        self
+    }
+    pub fn with_trains_count_signal(mut self, trains_count_signal: SimpleEntity) -> Self {
+        self.trains_count_signal = Some(trains_count_signal);
+        self
+    }
+    pub fn with_trains_limit_signal(mut self, trains_limit_signal: SimpleEntity) -> Self {
+        self.trains_limit_signal = Some(trains_limit_signal);
+        self
+    }
+    pub const fn with_read_logistics(mut self, read_logistics: bool) -> Self {
+        self.read_logistics = Some(read_logistics);
+        self
+    }
+    pub const fn with_read_robot_stats(mut self, read_robot_stats: bool) -> Self {
+        self.read_robot_stats = Some(read_robot_stats);
+        self
+    }
+    pub fn with_available_construction_output_signal(
+        mut self,
+        available_construction_output_signal: SimpleEntity,
+    ) -> Self {
+        self.available_construction_output_signal = Some(available_construction_output_signal);
+        self
+    }
+    pub fn with_available_logistic_output_signal(
+        mut self,
+        available_logistic_output_signal: SimpleEntity,
+    ) -> Self {
+        self.available_logistic_output_signal = Some(available_logistic_output_signal);
+        self
+    }
+    pub fn with_total_construction_output_signal(
+        mut self,
+        total_construction_output_signal: SimpleEntity,
+    ) -> Self {
+        self.total_construction_output_signal = Some(total_construction_output_signal);
+        self
+    }
+    pub fn with_total_logistic_output_signal(
+        mut self,
+        total_logistic_output_signal: SimpleEntity,
+    ) -> Self {
+        self.total_logistic_output_signal = Some(total_logistic_output_signal);
+        self
+    }
+    pub const fn with_circuit_open_gate(mut self, circuit_open_gate: bool) -> Self {
+        self.circuit_open_gate = Some(circuit_open_gate);
+        self
+    }
+    pub const fn with_circuit_read_sensor(mut self, circuit_read_sensor: bool) -> Self {
+        self.circuit_read_sensor = Some(circuit_read_sensor);
+        self
+    }
+    pub const fn with_circuit_close_signal(mut self, circuit_close_signal: bool) -> Self {
+        self.circuit_close_signal = Some(circuit_close_signal);
+        self
+    }
+    pub const fn with_circuit_read_signal(mut self, circuit_read_signal: bool) -> Self {
+        self.circuit_read_signal = Some(circuit_read_signal);
+        self
+    }
+}
+
+impl Default for ControlBehavior {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 /// Reverse-engineered by hand, contains arithmetic combinator metadata
@@ -581,6 +950,23 @@ pub struct Position {
     pub x: R64,
     #[serde(serialize_with = "serialize_r64")]
     pub y: R64,
+}
+
+impl Position {
+    pub fn new(x: f64, y: f64) -> Self {
+        Self {
+            x: R64::new(x),
+            y: R64::new(y),
+        }
+    }
+
+    pub const fn x(&self) -> f64 {
+        self.x.const_raw()
+    }
+
+    pub const fn y(&self) -> f64 {
+        self.y.const_raw()
+    }
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
