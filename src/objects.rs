@@ -76,11 +76,11 @@ pub struct Blueprint {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub schedules: Vec<Schedule>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub position_relative_to_grid: Option<Position>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub snap_to_grid: Option<Position>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub absolute_snapping: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub position_relative_to_grid: Option<Position>,
     pub version: u64,
 }
 
@@ -96,9 +96,9 @@ impl Default for Blueprint {
             tiles: Default::default(),
             icons: Default::default(),
             schedules: Default::default(),
-            position_relative_to_grid: Default::default(),
             snap_to_grid: Default::default(),
             absolute_snapping: Default::default(),
+            position_relative_to_grid: Default::default(),
         }
     }
 }
@@ -597,7 +597,10 @@ impl ControlBehavior {
         }
     }
 
-    pub const fn with_connect_to_logistic_network(mut self, connect_to_logistic_network: bool) -> Self {
+    pub const fn with_connect_to_logistic_network(
+        mut self,
+        connect_to_logistic_network: bool,
+    ) -> Self {
         self.connect_to_logistic_network = Some(connect_to_logistic_network);
         self
     }
@@ -650,11 +653,17 @@ impl ControlBehavior {
         self.circuit_contents_read_mode = Some(circuit_contents_read_mode);
         self
     }
-    pub const fn with_circuit_hand_read_mode(mut self, circuit_hand_read_mode: ContentReadMode) -> Self {
+    pub const fn with_circuit_hand_read_mode(
+        mut self,
+        circuit_hand_read_mode: ContentReadMode,
+    ) -> Self {
         self.circuit_hand_read_mode = Some(circuit_hand_read_mode);
         self
     }
-    pub const fn with_circuit_read_hand_contents(mut self, circuit_read_hand_contents: bool) -> Self {
+    pub const fn with_circuit_read_hand_contents(
+        mut self,
+        circuit_read_hand_contents: bool,
+    ) -> Self {
         self.circuit_read_hand_contents = Some(circuit_read_hand_contents);
         self
     }
@@ -669,7 +678,10 @@ impl ControlBehavior {
         self.stack_control_input_signal = Some(stack_control_input_signal);
         self
     }
-    pub const fn with_circuit_parameters(mut self, circuit_parameters: SpeakerCircuitParameters) -> Self {
+    pub const fn with_circuit_parameters(
+        mut self,
+        circuit_parameters: SpeakerCircuitParameters,
+    ) -> Self {
         self.circuit_parameters = Some(circuit_parameters);
         self
     }
@@ -944,7 +956,7 @@ pub struct Tile {
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Position_object
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Deserialize, Serialize)]
 pub struct Position {
     #[serde(serialize_with = "serialize_r64")]
     pub x: R64,
@@ -960,12 +972,30 @@ impl Position {
         }
     }
 
-    pub const fn x(&self) -> f64 {
+    pub const fn x(self) -> f64 {
         self.x.const_raw()
     }
 
-    pub const fn y(&self) -> f64 {
+    pub const fn y(self) -> f64 {
         self.y.const_raw()
+    }
+}
+
+impl core::ops::Add for Position {
+    type Output = Self;
+    fn add(mut self, rhs: Self) -> Self::Output {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self
+    }
+}
+
+impl core::ops::Sub for Position {
+    type Output = Self;
+    fn sub(mut self, rhs: Self) -> Self::Output {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
+        self
     }
 }
 
