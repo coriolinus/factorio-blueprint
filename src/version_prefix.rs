@@ -38,7 +38,7 @@ where
             self.0.has_seen_version = true;
             let mut new_buf = vec![0; buf.len() + 1];
             new_buf[0] = self.0.version;
-            (&mut new_buf[1..]).copy_from_slice(buf);
+            new_buf[1..].copy_from_slice(buf);
             self.0.wrapped.write(&new_buf).map(|n| n - 1)
         }
     }
