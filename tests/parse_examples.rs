@@ -1,8 +1,7 @@
-use std::path::PathBuf;
-use factorio_blueprint::{BlueprintCodec, Container, Error, Result};
 use assert_json_diff::assert_json_eq;
+use factorio_blueprint::{BlueprintCodec, Container, Error, Result};
 use std::io::{BufReader, Read};
-
+use std::path::PathBuf;
 
 fn test_parse<R: Read>(reader: R) {
     let mut json_data = Vec::new();
@@ -44,7 +43,6 @@ fn can_read_from_untrimmed_files() {
         ));
     }
 }
-
 
 /// Decodes a blueprint string and compares that parsed json matches
 /// after we decode and then re-encode it.
