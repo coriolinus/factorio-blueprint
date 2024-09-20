@@ -243,8 +243,8 @@ pub struct Entity {
     pub entity_number: EntityNumber,
     pub name: Prototype,
     pub position: Position,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub direction: Option<u8>,
+    #[serde(default = "Direction::default")]
+    pub direction: Direction,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -302,6 +302,21 @@ pub struct Entity {
     pub manual_trains_limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub neighbours: Option<Vec<EntityNumber>>,
+}
+
+/// Direction of an entity
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr, Default)]
+#[repr(u8)]
+pub enum Direction {
+    #[default]
+    North = 0,
+    NorthEast = 1,
+    East = 2,
+    SouthEast = 3,
+    South = 4,
+    SouthWest = 5,
+    West = 6,
+    NorthWest = 7,
 }
 
 /// Reverse-engineered by hand, contains circuit network metadata
