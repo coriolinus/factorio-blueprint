@@ -584,12 +584,7 @@ pub struct Position {
 }
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_object
-#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum Connection {
-    Single(ConnectionPoint),
-    Multiple(Vec<ConnectionData>),
-}
+pub type Connection = ConnectionPoint;
 
 /// https://wiki.factorio.com/Blueprint_string_format#Connection_point_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
