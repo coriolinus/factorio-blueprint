@@ -2,7 +2,7 @@ use crate::Container;
 use noisy_float::types::R64;
 use serde::{Deserialize, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Display};
 
 const DEFAULT_VERSION: u64 = 77310525440;
 
@@ -426,9 +426,65 @@ pub struct ArithmeticConditions {
     pub second_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second_signal: Option<SignalID>,
-    pub operation: String,
+    pub operation: ArithmeticOperation,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SignalID>,
+}
+
+/// Possible operation performed by an arithmetic combinator
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub enum ArithmeticOperation {
+    /// Addition (+)
+    #[serde(rename = "+")]
+    Add,
+    /// Subtraction (−)
+    #[serde(rename = "-")]
+    Subtract,
+    /// Multiplication (*)
+    #[serde(rename = "*")]
+    Multiply,
+    /// Division (/)
+    #[serde(rename = "/")]
+    Divide,
+    /// Modulo (%)
+    #[serde(rename = "%")]
+    Modulo,
+    /// Exponentiation (^)
+    #[serde(rename = "^")]
+    Exponentiate,
+    /// Left bit shift (<<)
+    #[serde(rename = "<<")]
+    LeftShift,
+    /// Right bit shift (>>)
+    #[serde(rename = ">>")]
+    RightShift,
+    /// Bitwise AND (&)
+    #[serde(rename = "AND")]
+    And,
+    /// Bitwise OR (|)
+    #[serde(rename = "OR")]
+    Or,
+    /// Bitwise XOR (^)
+    #[serde(rename = "XOR")]
+    Xor,
+}
+
+impl Display for ArithmeticOperation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ArithmeticOperation::Add => write!(f, "+"),
+            ArithmeticOperation::Subtract => write!(f, "-"),
+            ArithmeticOperation::Multiply => write!(f, "*"),
+            ArithmeticOperation::Divide => write!(f, "/"),
+            ArithmeticOperation::Modulo => write!(f, "%"),
+            ArithmeticOperation::Exponentiate => write!(f, "^"),
+            ArithmeticOperation::LeftShift => write!(f, "<<"),
+            ArithmeticOperation::RightShift => write!(f, ">>"),
+            ArithmeticOperation::And => write!(f, "&"),
+            ArithmeticOperation::Or => write!(f, "|"),
+            ArithmeticOperation::Xor => write!(f, "^"),
+        }
+    }
 }
 
 /// Reverse-engineered by hand, contains constant combinator metadata
@@ -440,11 +496,47 @@ pub struct DeciderConditions {
     pub second_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub constant: Option<i32>,
-    pub comparator: String,
+    pub comparator: DeciderComparator,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub copy_count_from_input: Option<bool>,
+}
+
+/// Possible comparisons performed by decider combinator
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub enum DeciderComparator {
+    /// "is greater than" (>)
+    #[serde(rename = ">")]
+    GreaterThan,
+    /// "is less than" (<)
+    #[serde(rename = "<")]
+    LessThan,
+    /// "greater than or equal to" (>=)
+    #[serde(rename = ">=")]
+    GreaterThanOrEqual,
+    /// "less than or equal to" (<=)
+    #[serde(rename = "<=")]
+    LessThanOrEqual,
+    /// "is equal to" (=)
+    #[serde(rename = "=")]
+    Equal,
+    /// "is not equal to" (!=)
+    #[serde(rename = "!=")]
+    NotEqual,
+}
+
+impl Display for DeciderComparator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            DeciderComparator::GreaterThan => write!(f, ">"),
+            DeciderComparator::LessThan => write!(f, "<"),
+            DeciderComparator::GreaterThanOrEqual => write!(f, ">="),
+            DeciderComparator::LessThanOrEqual => write!(f, "<="),
+            DeciderComparator::Equal => write!(f, "="),
+            DeciderComparator::NotEqual => write!(f, "!="),
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
