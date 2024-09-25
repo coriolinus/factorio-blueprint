@@ -237,13 +237,17 @@ pub enum SignalIDType {
     Virtual,
 }
 
+fn is_default<T: Default + PartialEq + std::fmt::Debug>(t: &T) -> bool {
+    t == &T::default()
+}
+
 /// https://wiki.factorio.com/Blueprint_string_format#Entity_object
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct Entity {
     pub entity_number: EntityNumber,
     pub name: Prototype,
     pub position: Position,
-    #[serde(default = "Direction::default")]
+    #[serde(skip_serializing_if = "is_default", default = "Direction::default")]
     pub direction: Direction,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
