@@ -2,7 +2,7 @@ use crate::Container;
 use noisy_float::types::R64;
 use serde::{Deserialize, Serialize, Serializer};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use std::{collections::HashMap, fmt::Display};
+use std::collections::HashMap;
 
 const DEFAULT_VERSION: u64 = 77310525440;
 
@@ -469,24 +469,6 @@ pub enum ArithmeticOperation {
     Xor,
 }
 
-impl Display for ArithmeticOperation {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ArithmeticOperation::Add => write!(f, "+"),
-            ArithmeticOperation::Subtract => write!(f, "-"),
-            ArithmeticOperation::Multiply => write!(f, "*"),
-            ArithmeticOperation::Divide => write!(f, "/"),
-            ArithmeticOperation::Modulo => write!(f, "%"),
-            ArithmeticOperation::Exponentiate => write!(f, "^"),
-            ArithmeticOperation::LeftShift => write!(f, "<<"),
-            ArithmeticOperation::RightShift => write!(f, ">>"),
-            ArithmeticOperation::And => write!(f, "&"),
-            ArithmeticOperation::Or => write!(f, "|"),
-            ArithmeticOperation::Xor => write!(f, "^"),
-        }
-    }
-}
-
 /// Reverse-engineered by hand, contains constant combinator metadata
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub struct DeciderConditions {
@@ -524,19 +506,6 @@ pub enum DeciderComparator {
     /// "is not equal to" (!=)
     #[serde(rename = "≠")]
     NotEqual,
-}
-
-impl Display for DeciderComparator {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            DeciderComparator::GreaterThan => write!(f, ">"),
-            DeciderComparator::LessThan => write!(f, "<"),
-            DeciderComparator::GreaterThanOrEqual => write!(f, ">="),
-            DeciderComparator::LessThanOrEqual => write!(f, "<="),
-            DeciderComparator::Equal => write!(f, "="),
-            DeciderComparator::NotEqual => write!(f, "!="),
-        }
-    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
