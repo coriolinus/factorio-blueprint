@@ -513,16 +513,16 @@ pub enum DeciderComparator {
     #[serde(rename = "<")]
     LessThan,
     /// "greater than or equal to" (>=)
-    #[serde(rename = ">=")]
+    #[serde(rename = "≥")]
     GreaterThanOrEqual,
     /// "less than or equal to" (<=)
-    #[serde(rename = "<=")]
+    #[serde(rename = "≤")]
     LessThanOrEqual,
     /// "is equal to" (=)
     #[serde(rename = "=")]
     Equal,
     /// "is not equal to" (!=)
-    #[serde(rename = "!=")]
+    #[serde(rename = "≠")]
     NotEqual,
 }
 
