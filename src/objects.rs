@@ -431,7 +431,7 @@ pub struct ArithmeticConditions {
     pub output_signal: Option<SignalID>,
 }
 
-/// Possible operation performed by an arithmetic combinator
+/// Possible operations performed by an arithmetic combinator
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
 pub enum ArithmeticOperation {
     /// Addition (+)
