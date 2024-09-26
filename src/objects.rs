@@ -244,7 +244,7 @@ pub struct Entity {
     pub name: Prototype,
     pub position: Position,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub direction: Option<u8>,
+    pub direction: Option<Direction>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub orientation: Option<R64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -302,6 +302,21 @@ pub struct Entity {
     pub manual_trains_limit: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub neighbours: Option<Vec<EntityNumber>>,
+}
+
+/// Direction of an entity
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize_repr, Serialize_repr, Default)]
+#[repr(u8)]
+pub enum Direction {
+    #[default]
+    North = 0,
+    NorthEast = 1,
+    East = 2,
+    SouthEast = 3,
+    South = 4,
+    SouthWest = 5,
+    West = 6,
+    NorthWest = 7,
 }
 
 /// Reverse-engineered by hand, contains circuit network metadata
@@ -411,9 +426,47 @@ pub struct ArithmeticConditions {
     pub second_constant: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub second_signal: Option<SignalID>,
-    pub operation: String,
+    pub operation: ArithmeticOperation,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SignalID>,
+}
+
+/// Possible operations performed by an arithmetic combinator
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub enum ArithmeticOperation {
+    /// Addition (+)
+    #[serde(rename = "+")]
+    Add,
+    /// Subtraction (−)
+    #[serde(rename = "-")]
+    Subtract,
+    /// Multiplication (*)
+    #[serde(rename = "*")]
+    Multiply,
+    /// Division (/)
+    #[serde(rename = "/")]
+    Divide,
+    /// Modulo (%)
+    #[serde(rename = "%")]
+    Modulo,
+    /// Exponentiation (^)
+    #[serde(rename = "^")]
+    Exponentiate,
+    /// Left bit shift (<<)
+    #[serde(rename = "<<")]
+    LeftShift,
+    /// Right bit shift (>>)
+    #[serde(rename = ">>")]
+    RightShift,
+    /// Bitwise AND (&)
+    #[serde(rename = "AND")]
+    And,
+    /// Bitwise OR (|)
+    #[serde(rename = "OR")]
+    Or,
+    /// Bitwise XOR (^)
+    #[serde(rename = "XOR")]
+    Xor,
 }
 
 /// Reverse-engineered by hand, contains constant combinator metadata
@@ -425,11 +478,34 @@ pub struct DeciderConditions {
     pub second_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub constant: Option<i32>,
-    pub comparator: String,
+    pub comparator: DeciderComparator,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_signal: Option<SignalID>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub copy_count_from_input: Option<bool>,
+}
+
+/// Possible comparisons performed by decider combinator
+#[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
+pub enum DeciderComparator {
+    /// "is greater than" (>)
+    #[serde(rename = ">")]
+    GreaterThan,
+    /// "is less than" (<)
+    #[serde(rename = "<")]
+    LessThan,
+    /// "greater than or equal to" (>=)
+    #[serde(rename = "≥")]
+    GreaterThanOrEqual,
+    /// "less than or equal to" (<=)
+    #[serde(rename = "≤")]
+    LessThanOrEqual,
+    /// "is equal to" (=)
+    #[serde(rename = "=")]
+    Equal,
+    /// "is not equal to" (!=)
+    #[serde(rename = "≠")]
+    NotEqual,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Deserialize, Serialize)]
